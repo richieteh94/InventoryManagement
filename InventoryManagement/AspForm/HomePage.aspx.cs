@@ -90,9 +90,16 @@ namespace InventoryManagement
                 rdr.Close();
                 conn.Close();
             }
-            catch (Exception ex)
+            catch (MySqlException mysqlex)
             {
-                Response.Write(ex.Message.ToString());
+                if (mysqlex.Number == 1042)
+                {
+                    Response.Write("<script>alert('Could not connect to database.');</script>");
+                }
+                else
+                {
+                    Response.Write("<script>alert('" + mysqlex.Number + "');</script>");
+                }
             }
         }
 
@@ -105,7 +112,7 @@ namespace InventoryManagement
             }
         }
 
-        private void searchItem(string searchInput)
+        /*private void searchItem(string searchInput)
         {
             try
             {
@@ -153,9 +160,9 @@ namespace InventoryManagement
             {
                 Response.Write(ex.Message.ToString());
             }
-        }
+        }*/
         
-        protected void searchClicked(object sender, EventArgs e)
+        /*protected void searchClicked(object sender, EventArgs e)
         {
             clearTable(searchTable);
 
@@ -171,7 +178,7 @@ namespace InventoryManagement
                 searchItem(searchBox);
             }
             
-        }
+        }*/
 
         [WebMethod]
         public static string refillItems(List<Product> products)
@@ -201,10 +208,18 @@ namespace InventoryManagement
 
                 conn.Close();
             }
-            catch (Exception ex)
+            catch (MySqlException mysqlex)
             {
                 //Console.Write("failed : "+ex.ToString());
-                responseString = ex.ToString();
+                if (mysqlex.Number == 1042)
+                {
+                    responseString = "Could not connect to database.";
+                }
+                else
+                {
+                    responseString = mysqlex.Number+"";
+                }
+
             }
             return responseString;
         }
@@ -215,8 +230,8 @@ namespace InventoryManagement
             string num = Num;
             string searchInput = Input;
 
-            string jsonString = jsonString = "{\"Barcode\":\"\",\"Name\":\"\",\"Row\":" 
-                + num + ",\"SearchInput\":\"" + searchInput + "\"}"; ;
+            string jsonString = "{\"Barcode\":\"\",\"Name\":\"\",\"Row\":" 
+                + num + ",\"SearchInput\":\"" + searchInput + "\"}";
             //Console.Write(jsonString);
             try
             {
@@ -233,16 +248,18 @@ namespace InventoryManagement
                     string barcode = rdr.GetString(0);
                     string name = rdr.GetString(1);
 
-                    jsonString = "{\"Barcode\":\"" +barcode+ "\",\"Name\":\""+name+"\",\"Row\":"+num+",\"SearchInput\":\""+searchInput+"\"}";
+                    jsonString = "{\"Barcode\":\"" +barcode+ "\",\"Name\":\""+name+"\",\"Row\":"+num+",\"SearchInput\":\""+searchInput+ "\"}";
                     
 
                 }
                 rdr.Close();
                 conn.Close();
             }
-            catch (Exception ex)
+            catch (MySqlException mysqlex)
             {
                 //Console.Write("failed : "+ex.ToString());
+                jsonString = "{\"Barcode\":\"\",\"Name\":\"\",\"Row\":"
+                + num + ",\"SearchInput\":\"" + searchInput + "\"}";
             }
             return jsonString;
         }
@@ -322,7 +339,7 @@ namespace InventoryManagement
         {
 
             string jsonString = "{\"Barcode\":\"\",\"Name\":\"\",\"Price\":\"\",\"SearchInput\":\"" 
-                                + searchInput + "\",\"Status\": \"\"}"; ;
+                                + searchInput + "\",\"Status\": \"\"}";
             //Console.Write(jsonString);
             try
             {
@@ -352,7 +369,10 @@ namespace InventoryManagement
             }
             catch (Exception ex)
             {
-                jsonString = ex.ToString();
+                //jsonString = ex.ToString();
+                jsonString = "{\"Barcode\":\"\",\"Name\":\"\",\"Price\":\"\",\"SearchInput\":\""
+                                + searchInput + "\",\"Status\": \"\"}";
+
             }
             return jsonString;
         }

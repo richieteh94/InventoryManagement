@@ -4,13 +4,17 @@ function addForm() {
     var num = document.getElementById("refillStockNumber").value;
 
     if (isNaN(num)) {
-        alert("Please enter number into the stock refill form.")
-    } else {
+        alert("Please enter number into the stock refill form.");
+    } else if (num==""){
+        alert("Please enter number into the stock refill form.");
+    }else if(num >= 1 && num <= 15){
         var repeats = document.getElementById("repeatForm").innerHTML = "";
         for (i = 0; i < num; i++) {
             addRepeatForm(i);
         }
         formCount = num;
+    } else {
+        alert("Please enter number in range of 1 until 15.");
     }
 }
 
@@ -91,14 +95,18 @@ function blurSearch(num) {
         var searchInput = document.getElementById("refillBarcode" + num).value;
         document.getElementById("refillName" + num).value = "";
 
-        if (searchInput != "" || searchInput != null) {
+        if (isNaN(searchInput)) {
+            alert("Please enter barcode to search item.");
+        } else if (searchInput=="") {
+            //Does nothing if no input.
+        }else if (searchInput != "" && searchInput != null) {
             $.ajax({
                 type: "POST",
                 url: "HomePage.aspx/searchItemInModal",
 
                 contentType: "application/json",
                 dataType: "json",
-                data: "{Num:" + num + ",Input: " + searchInput + "}",
+                data: "{Num:" + num + ",Input: \"" + searchInput + "\"}",
                 success: OnSuccess,
                 failure: function (response) {
                     alert("Fail :" + response.responseText);
@@ -107,7 +115,7 @@ function blurSearch(num) {
                     alert("Error: " + response.responseText);
                 }
             });
-        }
+        } 
         
     });
 }
@@ -116,7 +124,7 @@ function OnSuccess(result) {
     var searchedResult = result.d;
     var obj = JSON.parse(searchedResult);
     //alert("Success:" + obj["Name"]);
-    if (obj["Name"] == "") {
+    if (obj["Name"] == "" ) {
         alert(obj["SearchInput"] + " does not exist.");
     } else {
         document.getElementById("refillName" + obj["Row"]).value = obj["Name"];
@@ -127,8 +135,8 @@ function refillStock() {
     var exist = false; var allExist = true;
     for (i = 0; i < formCount; i++) {
         var name = document.getElementById("refillName"+i).value;
-        var quantity = document.getElementById("refillAmount"+i).value;
-        if (name != "" && quantity != "") {
+        var quantity = document.getElementById("refillAmount" + i).value;
+        if (name != "" && quantity != "" && quantity%1 == 0) {
             exist = true;
         } else {
             allExist = false;
@@ -169,6 +177,6 @@ function refillStock() {
         });
         
     } else {
-        alert("There is/are blank value(s).");
+        alert("There is/are blank value(s) or quantity field(s) have decimal places.");
     }
 }

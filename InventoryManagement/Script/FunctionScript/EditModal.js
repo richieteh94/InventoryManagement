@@ -1,42 +1,45 @@
 ﻿function searchEditModal() {
     var searchInput = document.getElementById("editSearchInput").value;
+    if (isNaN(searchInput)) {
+        alert("Please enter barcode in the search field.");
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "HomePage.aspx/searchItemEditModal",
+            contentType: "application/json",
+            dataType: "json",
+            data: "{searchInput:\"" + searchInput + "\"}",
+            success: function (response) {
 
-    $.ajax({
-        type: "POST",
-        url: "HomePage.aspx/searchItemEditModal",
-        contentType: "application/json",
-        dataType: "json",
-        data: "{searchInput:"+searchInput+"}",
-        success: function (response) {
-            
-            //$('#edit').modal('toggle');
-            //window.location.href = "HomePage.aspx"
-            //alert("Barcode : " + response.d);
-            var searchedResult = response.d;
-            
-            var obj = JSON.parse(searchedResult);
-            //alert("Success:" + obj["Name"]);
-            if (obj["Name"] == "") {
-                alert(obj["SearchInput"] + " does not exist.");
-            } else {
-                document.getElementById("editBarcode").value = obj["Barcode"];
-                document.getElementById("editName").value = obj["Name"];
-                document.getElementById("editPrice").value = obj["Price"];
-                if (obj["Status"]=="Available") {
-                    document.getElementById("editStatus").value = 1;
+                //$('#edit').modal('toggle');
+                //window.location.href = "HomePage.aspx"
+                //alert("Barcode : " + response.d);
+                var searchedResult = response.d;
+
+                var obj = JSON.parse(searchedResult);
+                //alert("Success:" + obj["Name"]);
+                if (obj["Name"] == "") {
+                    alert(obj["SearchInput"] + " does not exist.");
                 } else {
-                    document.getElementById("editStatus").value = 0;
+                    document.getElementById("editBarcode").value = obj["Barcode"];
+                    document.getElementById("editName").value = obj["Name"];
+                    document.getElementById("editPrice").value = obj["Price"];
+                    if (obj["Status"] == "Available") {
+                        document.getElementById("editStatus").value = 1;
+                    } else {
+                        document.getElementById("editStatus").value = 0;
+                    }
                 }
+            },
+            failure: function (response) {
+                alert("Fail :" + response.d);
+            },
+            error: function (response) {
+                alert("Error: " + response.responseText);
             }
-
-        },
-        failure: function (response) {
-            alert("Fail :" + response.d);
-        },
-        error: function (response) {
-            alert("Error: " + response.responseText);
-        }
-    });
+        });
+    }
+    
 }
 
 function editStock() {
@@ -49,7 +52,9 @@ function editStock() {
     if (barcode == ""){
         alert("Please search an item before edit.");
     } else if(name == "" || price == ""){
-        alert("Please fill in the fill.");
+        alert("Please fill in the fields.");
+    } else if (isNaN(price)){
+        alert("Price field contains alphabet letters.");
     } else {
         var product = new Object();
         product.barcode = barcode;

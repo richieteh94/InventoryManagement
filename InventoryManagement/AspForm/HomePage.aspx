@@ -101,7 +101,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <p id="stockPara">Stock needed to refill :</p>
-                            <input type="number" id="refillStockNumber"/>
+                            <input type="number" id="refillStockNumber" placeholder="1 - 15"/>
                             <button id="refillStockGo" type="button" onclick="addForm()" class="btn btn-primary">Go</button>
                         </div>
 
@@ -159,7 +159,7 @@
                         </div>
                         <div class="form-group">
                             <label for="addPrice">Price(RM):</label>
-                            <input type="text" class="form-control" id="addPrice" placeholder="4.99" name="addPrice"/>
+                            <input type="number" class="form-control" id="addPrice" placeholder="4.99" name="addPrice"/>
                         </div>
                         <div class="form-group">
                             <label for="addAmount">Quantity:</label>
@@ -214,7 +214,7 @@
                         </div>
                         <div class="form-group">
                             <label for="editPrice">Price(RM):</label>
-                            <input type="text" class="form-control" id="editPrice" placeholder="4.99"/>
+                            <input type="number" class="form-control" id="editPrice" placeholder="4.99"/>
                         </div>
                         <div class="form-group">
                             <label for="editStatus">Status:</label>

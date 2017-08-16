@@ -8,7 +8,15 @@
 
     if (barcode == "" || name == "" || price == "" || quantity == "" || status == "") {
         alert("Please fill in the field.");
-    }  else {
+    } else if (isNaN(barcode)) {
+        alert("Barcode field contains alphabet letters.");
+    } else if (isNaN(price)) {
+        alert("Price field contains alphabet letters.");
+    } else if (isNaN(quantity)) {
+        alert("Quantity field contains alphabet letters.");
+    } else if (quantity % 1 > 0) {
+        alert("Quantity field should not in decimals");
+    }else {
         var product = new Object();
         product.barcode = barcode;
         product.name = name;
